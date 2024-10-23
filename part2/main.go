@@ -2,15 +2,20 @@ package main
 
 import (
 	"bufio"
+	"crypto/tls"
 	"fmt"
-	"net"
 	"os"
 )
 
 func main() {
 	serverAddress := "localhost:8080"
 
-	conn, err := net.Dial("tcp", serverAddress)
+	// Настройка TLS
+	config := &tls.Config{
+		InsecureSkipVerify: true, // Используйте только для тестирования
+	}
+
+	conn, err := tls.Dial("tcp", serverAddress, config)
 	if err != nil {
 		fmt.Println("Ошибка при подключении к серверу:", err)
 		return

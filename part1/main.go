@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net"
 	"os"
@@ -13,7 +14,15 @@ import (
 
 func main() {
 	port := ":8080"
-	listener, err := net.Listen("tcp", port)
+
+	cert, err := tls.LoadX509KeyPair("server.crt", "server.key")
+	if err != nil {
+		fmt.Println("Ошибка загрузки сертификата:", err)
+		return
+	}
+
+	config := &tls.Config{Certificates: []tls.Certificate{cert}}
+	listener, err := tls.Listen("tcp", port, config)
 	if err != nil {
 		fmt.Println("Ошибка при запуске сервера:", err)
 		return
